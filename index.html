@@ -1,121 +1,130 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8" />
-    <title>profile</title>
+<meta charset="UTF-8">
+<title>profile</title>
 
-    <script>
-        const CONFIG = {
-            links: {
-                Discord: "https://discord.gg/DEINCODE",
-                Telegram: "https://t.me/DEINNAME",
-                Message: "mailto:you@example.com"
-            },
-            music: "otuka - stuckk on you - otuka.mp3"
-        };
-    </script>
+<script>
+const CONFIG = {
+    links: {
+        Discord: "https://discord.gg/DEINCODE",
+        Telegram: "https://t.me/DEINNAME",
+        Message: "mailto:you@example.com"
+    },
+    music: "otuka - stuckk on you - otuka.mp3"
+};
+</script>
 
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            background: #000;
-            font-family: "Courier New", monospace;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: #000;
+    font-family: "Courier New", monospace;
+}
 
-        .terminal {
-            text-align: center;
-            user-select: none;
-        }
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        pre {
-            font-size: 16px;
-            line-height: 1.1;
-            margin-bottom: 30px;
-            background: linear-gradient(
-                270deg,
-                #ff0000,
-                #ff7f00,
-                #ffff00,
-                #00ff00,
-                #00ffff,
-                #0000ff,
-                #8b00ff
-            );
-            background-size: 800% 800%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: rainbow 6s linear infinite;
-        }
+/* CENTER */
+.terminal {
+    text-align: center;
+}
 
-        @keyframes rainbow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+/* ASCII LOGO */
+pre {
+    font-size: 16px;
+    line-height: 1.1;
+    margin-bottom: 25px;
 
-        .links span {
-            margin: 0 10px;
-            cursor: pointer;
-            color: #aaa;
-            transition: color 0.2s;
-        }
+    background: linear-gradient(
+        270deg,
+        red, orange, yellow, lime, cyan, blue, violet
+    );
+    background-size: 600% 600%;
+    animation: rainbow 6s linear infinite;
 
-        .links span:hover {
-            color: #fff;
-        }
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
-        /* VOLUME SLIDER */
-        .volume {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            width: 120px;
-        }
+@keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
 
-        .volume input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 6px;
-            border-radius: 4px;
-            background: linear-gradient(
-                270deg,
-                #ff0000,
-                #ff7f00,
-                #ffff00,
-                #00ff00,
-                #00ffff,
-                #0000ff,
-                #8b00ff
-            );
-            background-size: 800% 800%;
-            animation: rainbow 6s linear infinite;
-            outline: none;
-        }
+/* LINKS */
+.links span {
+    color: #aaa;
+    margin: 0 10px;
+    cursor: pointer;
+}
+.links span:hover {
+    color: #fff;
+}
 
-        .volume input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #eee;
-            cursor: pointer;
-        }
+/* VOLUME BAR */
+.volume {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 140px;
+    z-index: 9999;
+}
 
-        .volume input[type="range"]::-moz-range-thumb {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #eee;
-            cursor: pointer;
-            border: none;
-        }
-    </style>
+/* RANGE RESET */
+input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+}
+
+/* TRACK */
+input[type=range]::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 4px;
+    background: linear-gradient(
+        270deg,
+        red, orange, yellow, lime, cyan, blue, violet
+    );
+    background-size: 600% 600%;
+    animation: rainbow 6s linear infinite;
+}
+
+input[type=range]::-moz-range-track {
+    height: 6px;
+    border-radius: 4px;
+    background: linear-gradient(
+        270deg,
+        red, orange, yellow, lime, cyan, blue, violet
+    );
+}
+
+/* THUMB */
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #eee;
+    margin-top: -3px;
+}
+
+input[type=range]::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #eee;
+    border: none;
+}
+</style>
 </head>
+
 <body>
 
 <div class="terminal">
@@ -133,44 +142,37 @@
     <input id="volume" type="range" min="0" max="1" step="0.01" value="0.4">
 </div>
 
-<audio id="bgm" loop preload="auto"></audio>
+<audio id="audio" loop preload="auto"></audio>
 
 <script>
-    // links
-    const linksContainer = document.getElementById("links");
-    Object.entries(CONFIG.links).forEach(([name, url]) => {
-        const span = document.createElement("span");
-        span.textContent = `[ ${name} ]`;
-        span.onclick = () => window.open(url, "_blank");
-        linksContainer.appendChild(span);
-    });
+/* LINKS */
+const links = document.getElementById("links");
+Object.entries(CONFIG.links).forEach(([name, url]) => {
+    const s = document.createElement("span");
+    s.textContent = `[ ${name} ]`;
+    s.onclick = () => window.open(url, "_blank");
+    links.appendChild(s);
+});
 
-    // audio
-    const audio = document.getElementById("bgm");
-    const volumeSlider = document.getElementById("volume");
+/* AUDIO */
+const audio = document.getElementById("audio");
+const slider = document.getElementById("volume");
 
-    audio.src = CONFIG.music;
-    audio.volume = volumeSlider.value;
+audio.src = CONFIG.music;
+audio.volume = slider.value;
 
-    volumeSlider.addEventListener("input", () => {
-        audio.volume = volumeSlider.value;
-    });
+slider.addEventListener("input", () => {
+    audio.volume = slider.value;
+});
 
-    let started = false;
+/* AUTOPLAY SAFE */
+const startAudio = () => {
+    audio.play().catch(() => {});
+};
 
-    const startAudio = () => {
-        if (started) return;
-        started = true;
-
-        audio.play().catch(() => {
-            audio.addEventListener("canplaythrough", () => {
-                audio.play();
-            }, { once: true });
-        });
-    };
-
-    document.addEventListener("click", startAudio, { once: true });
-    document.addEventListener("keydown", startAudio, { once: true });
+["click", "keydown", "touchstart"].forEach(e =>
+    document.addEventListener(e, startAudio, { once: true })
+);
 </script>
 
 </body>
