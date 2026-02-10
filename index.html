@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <title>profile</title>
 
-    <!-- CONFIG -->
     <script>
         const CONFIG = {
             links: {
@@ -21,11 +20,11 @@
             margin: 0;
             height: 100vh;
             background: #000;
-            color: #fff;
             font-family: "Courier New", monospace;
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
 
         .terminal {
@@ -69,6 +68,52 @@
         .links span:hover {
             color: #fff;
         }
+
+        /* VOLUME SLIDER */
+        .volume {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 120px;
+        }
+
+        .volume input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 4px;
+            background: linear-gradient(
+                270deg,
+                #ff0000,
+                #ff7f00,
+                #ffff00,
+                #00ff00,
+                #00ffff,
+                #0000ff,
+                #8b00ff
+            );
+            background-size: 800% 800%;
+            animation: rainbow 6s linear infinite;
+            outline: none;
+        }
+
+        .volume input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #eee;
+            cursor: pointer;
+        }
+
+        .volume input[type="range"]::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #eee;
+            cursor: pointer;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -84,7 +129,11 @@
 <div class="links" id="links"></div>
 </div>
 
-<audio id="bgm" loop></audio>
+<div class="volume">
+    <input id="volume" type="range" min="0" max="1" step="0.01" value="0.4">
+</div>
+
+<audio id="bgm" loop preload="auto"></audio>
 
 <script>
     // links
@@ -96,14 +145,32 @@
         linksContainer.appendChild(span);
     });
 
-    // music (browser-safe)
+    // audio
     const audio = document.getElementById("bgm");
-    audio.src = CONFIG.music;
-    audio.volume = 0.4;
+    const volumeSlider = document.getElementById("volume");
 
-    document.addEventListener("click", () => {
-        if (audio.paused) audio.play();
-    }, { once: true });
+    audio.src = CONFIG.music;
+    audio.volume = volumeSlider.value;
+
+    volumeSlider.addEventListener("input", () => {
+        audio.volume = volumeSlider.value;
+    });
+
+    let started = false;
+
+    const startAudio = () => {
+        if (started) return;
+        started = true;
+
+        audio.play().catch(() => {
+            audio.addEventListener("canplaythrough", () => {
+                audio.play();
+            }, { once: true });
+        });
+    };
+
+    document.addEventListener("click", startAudio, { once: true });
+    document.addEventListener("keydown", startAudio, { once: true });
 </script>
 
 </body>
