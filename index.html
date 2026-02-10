@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>zyro lol</title>
+<title>profile</title>
 
 <script>
 const CONFIG = {
@@ -37,40 +37,34 @@ html, body {
     font-size: 18px;
     cursor: pointer;
     z-index: 9999;
-    transition: opacity 0.8s ease;
+    transition: opacity .8s;
 }
-
 #enter.fade {
     opacity: 0;
     pointer-events: none;
 }
 
-/* MAIN CONTENT */
+/* CONTENT */
 #content {
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     opacity: 0;
-    transition: opacity 1s ease;
+    transition: opacity 1s;
 }
+#content.show { opacity: 1; }
 
-#content.show {
-    opacity: 1;
-}
+.terminal { text-align: center; }
 
-.terminal {
-    text-align: center;
-}
-
-/* RAINBOW ANIMATION (shared) */
+/* RAINBOW */
 @keyframes rainbow {
     0%   { background-position: 0% 50%; }
     50%  { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
 
-/* ASCII LOGO */
+/* LOGO */
 pre {
     font-size: 16px;
     line-height: 1.1;
@@ -93,77 +87,60 @@ pre {
     margin: 0 10px;
     cursor: pointer;
 }
-.links span:hover {
-    color: #fff;
-}
+.links span:hover { color: #fff; }
 
-/* VOLUME SLIDER */
+/* ===== CUSTOM SLIDER ===== */
 .volume {
     position: fixed;
     bottom: 20px;
     left: 20px;
     width: 140px;
-    z-index: 1000;
+    height: 14px;
 }
 
-/* RANGE RESET */
-input[type=range] {
-    -webkit-appearance: none;
+/* FAKE TRACK (REAL ELEMENT → ANIMATES!) */
+.track {
+    position: absolute;
+    inset: 0;
+    height: 6px;
+    top: 4px;
+    border-radius: 4px;
+
+    background: linear-gradient(
+        90deg,
+        red, orange, yellow, lime, cyan, blue, violet
+    );
+    background-size: 600% 600%;
+    animation: rainbow 6s linear infinite;
+}
+
+/* REAL RANGE (INVISIBLE) */
+.volume input {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    background: transparent;
+    opacity: 0;
+    cursor: pointer;
 }
 
-/* TRACK – EXACT SAME AS LOGO */
-input[type=range]::-webkit-slider-runnable-track {
-    height: 6px;
-    border-radius: 4px;
-
-    background: linear-gradient(
-        90deg,
-        red, orange, yellow, lime, cyan, blue, violet
-    );
-    background-size: 600% 600%;
-    animation: rainbow 6s linear infinite;
-}
-
-input[type=range]::-moz-range-track {
-    height: 6px;
-    border-radius: 4px;
-
-    background: linear-gradient(
-        90deg,
-        red, orange, yellow, lime, cyan, blue, violet
-    );
-    background-size: 600% 600%;
-    animation: rainbow 6s linear infinite;
-}
-
-/* THUMB – SIMPLE */
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
+/* THUMB */
+.thumb {
+    position: absolute;
+    top: 1px;
     width: 12px;
     height: 12px;
     border-radius: 50%;
     background: #eee;
-    margin-top: -3px;
-}
-
-input[type=range]::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #eee;
-    border: none;
+    pointer-events: none;
+    transform: translateX(0);
 }
 </style>
 </head>
 
 <body>
 
-<!-- CLICK TO ENTER -->
 <div id="enter">click to enter...</div>
 
-<!-- MAIN CONTENT -->
 <div id="content">
     <div class="terminal">
 <pre>
@@ -172,13 +149,14 @@ input[type=range]::-moz-range-thumb {
  / _/  )  /  )   /(  O )_ / (_/\(  O )/ (_/\
 (____)(__/  (__\_) \__/(_)\____/ \__/ \____/
 </pre>
-
         <div class="links" id="links"></div>
     </div>
 </div>
 
-<!-- VOLUME -->
+<!-- SLIDER -->
 <div class="volume">
+    <div class="track"></div>
+    <div class="thumb" id="thumb"></div>
     <input id="volume" type="range" min="0" max="1" step="0.01" value="0.4">
 </div>
 
@@ -187,33 +165,35 @@ input[type=range]::-moz-range-thumb {
 <script>
 /* LINKS */
 const links = document.getElementById("links");
-Object.entries(CONFIG.links).forEach(([name, url]) => {
+Object.entries(CONFIG.links).forEach(([n, u]) => {
     const s = document.createElement("span");
-    s.textContent = `[ ${name} ]`;
-    s.onclick = () => window.open(url, "_blank");
+    s.textContent = `[ ${n} ]`;
+    s.onclick = () => window.open(u, "_blank");
     links.appendChild(s);
 });
 
-/* AUDIO */
+/* AUDIO + SLIDER */
 const audio = document.getElementById("audio");
 const slider = document.getElementById("volume");
+const thumb = document.getElementById("thumb");
 
 audio.src = CONFIG.music;
 audio.volume = slider.value;
 
-slider.addEventListener("input", () => {
+const updateThumb = () => {
+    thumb.style.transform = `translateX(${slider.value * 128}px)`;
     audio.volume = slider.value;
-});
+};
+updateThumb();
+
+slider.addEventListener("input", updateThumb);
 
 /* ENTER */
-const enter = document.getElementById("enter");
-const content = document.getElementById("content");
-
-enter.addEventListener("click", () => {
+document.getElementById("enter").onclick = () => {
     enter.classList.add("fade");
     content.classList.add("show");
-    audio.play().catch(() => {});
-});
+    audio.play().catch(()=>{});
+};
 </script>
 
 </body>
