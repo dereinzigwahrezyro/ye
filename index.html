@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" />
+    <title>profile</title>
+
+    <!-- CONFIG -->
+    <script>
+        const CONFIG = {
+            name: "welcome to zyro.lol",
+            subtitle: "Nothing really here, just the 2 of us",
+            links: {
+                Discord: "https://discord.gg/bpBdFgb7DJ",
+                Telegram: "https://t.me/z39011",
+                Message: "discord.gg/users/747402318168850452"
+            },
+            music: "music.mp3" // Pfad zu deiner Musik
+        };
+    </script>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: #000;
+            color: #ccc;
+            font-family: "Courier New", monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .terminal {
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+        }
+
+        h1 {
+            font-size: 18px;
+            font-weight: normal;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-bottom: 20px;
+        }
+
+        .links span {
+            margin: 0 8px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .links span:hover {
+            color: #fff;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="terminal">
+    <h1 id="title"></h1>
+    <p id="subtitle"></p>
+
+    <div class="links" id="links"></div>
+</div>
+
+<audio id="bgm" loop></audio>
+
+<script>
+    // inject text
+    document.getElementById("title").textContent = CONFIG.name;
+    document.getElementById("subtitle").textContent = CONFIG.subtitle;
+
+    // inject links
+    const linksContainer = document.getElementById("links");
+    Object.entries(CONFIG.links).forEach(([name, url]) => {
+        const span = document.createElement("span");
+        span.textContent = `[ ${name} ]`;
+        span.onclick = () => window.open(url, "_blank");
+        linksContainer.appendChild(span);
+    });
+
+    // music (starts on first interaction)
+    const audio = document.getElementById("bgm");
+    audio.src = CONFIG.music;
+    audio.volume = 0.4;
+
+    document.addEventListener("click", () => {
+        if (audio.paused) audio.play();
+    }, { once: true });
+</script>
+
+</body>
+</html>
