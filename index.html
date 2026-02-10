@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>profile</title>
+<title>zyro lol</title>
 
 <script>
 const CONFIG = {
@@ -63,7 +63,14 @@ html, body {
     text-align: center;
 }
 
-/* ASCII */
+/* RAINBOW ANIMATION (shared) */
+@keyframes rainbow {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ASCII LOGO */
 pre {
     font-size: 16px;
     line-height: 1.1;
@@ -80,12 +87,6 @@ pre {
     -webkit-text-fill-color: transparent;
 }
 
-@keyframes rainbow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
 /* LINKS */
 .links span {
     color: #aaa;
@@ -96,39 +97,48 @@ pre {
     color: #fff;
 }
 
-/* VOLUME */
+/* VOLUME SLIDER */
 .volume {
     position: fixed;
     bottom: 20px;
     left: 20px;
     width: 140px;
+    z-index: 1000;
 }
 
+/* RANGE RESET */
 input[type=range] {
     -webkit-appearance: none;
     width: 100%;
     background: transparent;
-    animation: hue 6s linear infinite;
 }
 
+/* TRACK – EXACT SAME AS LOGO */
 input[type=range]::-webkit-slider-runnable-track {
     height: 6px;
     border-radius: 4px;
+
     background: linear-gradient(
         90deg,
         red, orange, yellow, lime, cyan, blue, violet
     );
+    background-size: 600% 600%;
+    animation: rainbow 6s linear infinite;
 }
 
 input[type=range]::-moz-range-track {
     height: 6px;
     border-radius: 4px;
+
     background: linear-gradient(
         90deg,
         red, orange, yellow, lime, cyan, blue, violet
     );
+    background-size: 600% 600%;
+    animation: rainbow 6s linear infinite;
 }
 
+/* THUMB – SIMPLE */
 input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 12px;
@@ -145,11 +155,6 @@ input[type=range]::-moz-range-thumb {
     background: #eee;
     border: none;
 }
-
-@keyframes hue {
-    from { filter: hue-rotate(0deg); }
-    to { filter: hue-rotate(360deg); }
-}
 </style>
 </head>
 
@@ -158,7 +163,7 @@ input[type=range]::-moz-range-thumb {
 <!-- CLICK TO ENTER -->
 <div id="enter">click to enter...</div>
 
-<!-- CONTENT -->
+<!-- MAIN CONTENT -->
 <div id="content">
     <div class="terminal">
 <pre>
@@ -172,6 +177,7 @@ input[type=range]::-moz-range-thumb {
     </div>
 </div>
 
+<!-- VOLUME -->
 <div class="volume">
     <input id="volume" type="range" min="0" max="1" step="0.01" value="0.4">
 </div>
@@ -191,6 +197,7 @@ Object.entries(CONFIG.links).forEach(([name, url]) => {
 /* AUDIO */
 const audio = document.getElementById("audio");
 const slider = document.getElementById("volume");
+
 audio.src = CONFIG.music;
 audio.volume = slider.value;
 
