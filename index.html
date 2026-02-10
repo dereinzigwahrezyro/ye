@@ -22,27 +22,55 @@ html, body {
     height: 100%;
     background: #000;
     font-family: "Courier New", monospace;
+    overflow: hidden;
 }
 
-body {
+/* CLICK TO ENTER */
+#enter {
+    position: fixed;
+    inset: 0;
+    background: #000;
     display: flex;
     justify-content: center;
     align-items: center;
+    color: #ddd;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 9999;
+    transition: opacity 0.8s ease;
 }
 
-/* CENTER */
+#enter.fade {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* MAIN CONTENT */
+#content {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+#content.show {
+    opacity: 1;
+}
+
 .terminal {
     text-align: center;
 }
 
-/* ASCII LOGO */
+/* ASCII */
 pre {
     font-size: 16px;
     line-height: 1.1;
     margin-bottom: 25px;
 
     background: linear-gradient(
-        270deg,
+        90deg,
         red, orange, yellow, lime, cyan, blue, violet
     );
     background-size: 600% 600%;
@@ -68,44 +96,39 @@ pre {
     color: #fff;
 }
 
-/* VOLUME BAR */
+/* VOLUME */
 .volume {
     position: fixed;
     bottom: 20px;
     left: 20px;
     width: 140px;
-    z-index: 9999;
 }
 
-/* RANGE RESET */
 input[type=range] {
     -webkit-appearance: none;
     width: 100%;
     background: transparent;
+    animation: hue 6s linear infinite;
 }
 
-/* TRACK */
 input[type=range]::-webkit-slider-runnable-track {
     height: 6px;
     border-radius: 4px;
     background: linear-gradient(
-        270deg,
+        90deg,
         red, orange, yellow, lime, cyan, blue, violet
     );
-    background-size: 600% 600%;
-    animation: rainbow 6s linear infinite;
 }
 
 input[type=range]::-moz-range-track {
     height: 6px;
     border-radius: 4px;
     background: linear-gradient(
-        270deg,
+        90deg,
         red, orange, yellow, lime, cyan, blue, violet
     );
 }
 
-/* THUMB */
 input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 12px;
@@ -122,12 +145,22 @@ input[type=range]::-moz-range-thumb {
     background: #eee;
     border: none;
 }
+
+@keyframes hue {
+    from { filter: hue-rotate(0deg); }
+    to { filter: hue-rotate(360deg); }
+}
 </style>
 </head>
 
 <body>
 
-<div class="terminal">
+<!-- CLICK TO ENTER -->
+<div id="enter">click to enter...</div>
+
+<!-- CONTENT -->
+<div id="content">
+    <div class="terminal">
 <pre>
  ____  _  _  ____   __     __     __   __
 (__  )( \/ )(  _ \ /  \   (  )   /  \ (  )
@@ -135,7 +168,8 @@ input[type=range]::-moz-range-thumb {
 (____)(__/  (__\_) \__/(_)\____/ \__/ \____/
 </pre>
 
-<div class="links" id="links"></div>
+        <div class="links" id="links"></div>
+    </div>
 </div>
 
 <div class="volume">
@@ -157,7 +191,6 @@ Object.entries(CONFIG.links).forEach(([name, url]) => {
 /* AUDIO */
 const audio = document.getElementById("audio");
 const slider = document.getElementById("volume");
-
 audio.src = CONFIG.music;
 audio.volume = slider.value;
 
@@ -165,14 +198,15 @@ slider.addEventListener("input", () => {
     audio.volume = slider.value;
 });
 
-/* AUTOPLAY SAFE */
-const startAudio = () => {
-    audio.play().catch(() => {});
-};
+/* ENTER */
+const enter = document.getElementById("enter");
+const content = document.getElementById("content");
 
-["click", "keydown", "touchstart"].forEach(e =>
-    document.addEventListener(e, startAudio, { once: true })
-);
+enter.addEventListener("click", () => {
+    enter.classList.add("fade");
+    content.classList.add("show");
+    audio.play().catch(() => {});
+});
 </script>
 
 </body>
