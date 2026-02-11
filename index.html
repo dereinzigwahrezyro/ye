@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>profile</title>
+<title>ZYRO.LOL</title>
 
 <script>
 const CONFIG = {
@@ -11,14 +11,13 @@ const CONFIG = {
         Telegram: "https://t.me/z39011",
         Message: "https://discord.com/users/747402318168850452"
     },
-    music: "otuka - stuckk on you - otuka.mp3"
+    music: "otuka - stuckk on you - otuka.mp3" // <-- Dateiname ohne Leerzeichen!
 };
 </script>
 
 <style>
 html, body {
     margin: 0;
-    padding: 0;
     height: 100%;
     background: #000;
     font-family: "Courier New", monospace;
@@ -33,8 +32,7 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #ddd;
-    font-size: 18px;
+    color: #ccc;
     cursor: pointer;
     z-index: 9999;
     transition: opacity .8s;
@@ -59,32 +57,26 @@ html, body {
 
 /* RAINBOW */
 @keyframes rainbow {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
 
-/* LOGO */
 pre {
     font-size: 16px;
-    line-height: 1.1;
     margin-bottom: 15px;
-
     background: linear-gradient(
         90deg,
         red, orange, yellow, lime, cyan, blue, violet
     );
     background-size: 600% 600%;
     animation: rainbow 6s linear infinite;
-
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-/* TIME TEXT */
 .time {
     color: #aaa;
-    font-size: 14px;
     margin-bottom: 20px;
 }
 
@@ -96,7 +88,7 @@ pre {
 }
 .links span:hover { color: #fff; }
 
-/* ===== CUSTOM SLIDER ===== */
+/* CUSTOM SLIDER */
 .volume {
     position: fixed;
     bottom: 20px;
@@ -111,7 +103,6 @@ pre {
     height: 6px;
     top: 4px;
     border-radius: 4px;
-
     background: linear-gradient(
         90deg,
         red, orange, yellow, lime, cyan, blue, violet
@@ -136,7 +127,6 @@ pre {
     border-radius: 50%;
     background: #eee;
     pointer-events: none;
-    transform: translateX(0);
 }
 </style>
 </head>
@@ -154,8 +144,7 @@ pre {
 (____)(__/  (__\_) \__/(_)\____/ \__/ \____/
 </pre>
 
-        <div class="time" id="time">My time: 00:00</div>
-
+        <div class="time" id="time"></div>
         <div class="links" id="links"></div>
     </div>
 </div>
@@ -169,47 +158,55 @@ pre {
 <audio id="audio" loop preload="auto"></audio>
 
 <script>
-/* LINKS */
-const links = document.getElementById("links");
-Object.entries(CONFIG.links).forEach(([n, u]) => {
-    const s = document.createElement("span");
-    s.textContent = `[ ${n} ]`;
-    s.onclick = () => window.open(u, "_blank");
-    links.appendChild(s);
-});
+window.addEventListener("DOMContentLoaded", () => {
 
-/* GERMAN TIME */
-const timeEl = document.getElementById("time");
-
-function updateTime() {
-    const now = new Date();
-    const germanTime = now.toLocaleTimeString("de-DE", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
+    /* LINKS */
+    const links = document.getElementById("links");
+    Object.entries(CONFIG.links).forEach(([n, u]) => {
+        const s = document.createElement("span");
+        s.textContent = `[ ${n} ]`;
+        s.onclick = () => window.open(u, "_blank");
+        links.appendChild(s);
     });
-    timeEl.textContent = "My time: " + germanTime;
-}
 
-updateTime();
-setInterval(updateTime, 1000);
+    /* TIME (DE) */
+    const timeEl = document.getElementById("time");
+    function updateTime() {
+        const now = new Date();
+        timeEl.textContent = "My time: " + now.toLocaleTimeString("de-DE");
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
 
-/* AUDIO + SLIDER */
-const audio = document.getElementById("audio");
-const slider = document.getElementById("volume");
-const thumb = document.getElementById("thumb");
+    /* AUDIO */
+    const audio = document.getElementById("audio");
+    const slider = document.getElementById("volume");
+    const thumb = document.getElementById("thumb");
 
-audio.src = CONFIG.music;
-audio.volume = slider.value;
-
-const updateThumb = () => {
-    thumb.style.transform = `translateX(${slider.value * 128}px)`;
+    audio.src = CONFIG.music;
     audio.volume = slider.value;
-};
-updateThumb();
 
-slider.addEventListener("input", updateThumb);
+    function updateThumb() {
+        const width = slider.offsetWidth - 12;
+        thumb.style.transform = `translateX(${slider.value * width}px)`;
+        audio.volume = slider.value;
+    }
 
-/* ENTER */
-const enter = document.getElementById("enter");
-const content = doc
+    updateThumb();
+    slider.addEventListener("input", updateThumb);
+
+    /* ENTER */
+    const enterEl = document.getElementById("enter");
+    const contentEl = document.getElementById("content");
+
+    enterEl.addEventListener("click", () => {
+        enterEl.classList.add("fade");
+        contentEl.classList.add("show");
+        audio.play().catch(()=>{});
+    });
+
+});
+</script>
+
+</body>
+</html>
