@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Zyro lol</title>
+<title>profile</title>
 
 <script>
 const CONFIG = {
@@ -68,7 +68,7 @@ html, body {
 pre {
     font-size: 16px;
     line-height: 1.1;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
 
     background: linear-gradient(
         90deg,
@@ -79,6 +79,13 @@ pre {
 
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+/* TIME TEXT */
+.time {
+    color: #aaa;
+    font-size: 14px;
+    margin-bottom: 20px;
 }
 
 /* LINKS */
@@ -98,7 +105,6 @@ pre {
     height: 14px;
 }
 
-/* FAKE TRACK (REAL ELEMENT → ANIMATES!) */
 .track {
     position: absolute;
     inset: 0;
@@ -114,7 +120,6 @@ pre {
     animation: rainbow 6s linear infinite;
 }
 
-/* REAL RANGE (INVISIBLE) */
 .volume input {
     position: absolute;
     inset: 0;
@@ -123,7 +128,6 @@ pre {
     cursor: pointer;
 }
 
-/* THUMB */
 .thumb {
     position: absolute;
     top: 1px;
@@ -149,11 +153,13 @@ pre {
  / _/  )  /  )   /(  O )_ / (_/\(  O )/ (_/\
 (____)(__/  (__\_) \__/(_)\____/ \__/ \____/
 </pre>
+
+        <div class="time" id="time">My time: 00:00</div>
+
         <div class="links" id="links"></div>
     </div>
 </div>
 
-<!-- SLIDER -->
 <div class="volume">
     <div class="track"></div>
     <div class="thumb" id="thumb"></div>
@@ -172,6 +178,22 @@ Object.entries(CONFIG.links).forEach(([n, u]) => {
     links.appendChild(s);
 });
 
+/* GERMAN TIME */
+const timeEl = document.getElementById("time");
+
+function updateTime() {
+    const now = new Date();
+    const germanTime = now.toLocaleTimeString("de-DE", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+    });
+    timeEl.textContent = "My time: " + germanTime;
+}
+
+updateTime();
+setInterval(updateTime, 1000);
+
 /* AUDIO + SLIDER */
 const audio = document.getElementById("audio");
 const slider = document.getElementById("volume");
@@ -189,12 +211,5 @@ updateThumb();
 slider.addEventListener("input", updateThumb);
 
 /* ENTER */
-document.getElementById("enter").onclick = () => {
-    enter.classList.add("fade");
-    content.classList.add("show");
-    audio.play().catch(()=>{});
-};
-</script>
-
-</body>
-</html>
+const enter = document.getElementById("enter");
+const content = doc
